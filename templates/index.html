@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Погода в России</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+        <header class="header">
+            <h1>Погода в городах России</h1>
+            <form method="POST" class="search-form">
+                <input type="text" class="search-input" name="city" placeholder="Введите название города..."
+                    aria-label="Поиск города">
+                <button type="submit" class="search-button">Поиск</button>
+            </form>
+        </header>
+
+        {% if search_result %}
+        <div class="search-result">
+            <div class="weather-card">
+                <h3>{{ search_result.name }}</h3>
+                <div class="weather-info">
+                    <div class="main-temp">{{ search_result.temp | round | int }}°C</div>
+                    <div class="weather-details">
+                        <div class="description">⛅ {{ search_result.description | capitalize }}</div>
+                        <div class="humidity">💧 Влажность: {{ search_result.humidity }}%</div>
+                        <div class="wind">🌪️ Ветер: {{ search_result.wind | round | int }} м/с</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elif error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if daily_forecast %}
+        <div class="daily-forecast">
+            <h2>Прогноз на сутки в {{ daily_forecast.city }}</h2>
+            <div class="periods-container">
+                {% for period in daily_forecast.periods %}
+                <div class="period-card">
+                    <div class="period-name">{{ period.name }}</div>
+                    <img src="http://openweathermap.org/img/wn/{{ period.icon }}@2x.png" class="period-icon">
+                    <div class="period-temp">{{ period.temp }}°C</div>
+                    <div class="period-feels">Ощущается {{ period.feels_like }}°C</div>
+                    <div class="period-desc">{{ period.description }}</div>
+                    <div class="period-details">
+                        <div class="detail-item">
+                            <span class="icon">💨</span>
+                            {{ period.wind }} м/с
+                        </div>
+                        <div class="detail-item">
+                            <span class="icon">💧</span>
+                            {{ period.humidity }}%
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="weekly-forecast">
+            <div class="weekly-header">
+                <h2 class="weekly-title">Прогноз на неделю</h2>
+            </div>
+            <div class="weekly-container">
+                {% for day in forecast.days %}
+                <div class="day-card">
+                    <div class="day-name">{{ day.weekday }}</div>
+                    <div class="day-date">{{ day.date }}</div>
+                    <img src="http://openweathermap.org/img/wn/{{ day.icon }}@2x.png" class="weather-icon"
+                        alt="Weather icon">
+                    <div class="temp-wrapper">
+                        <div class="temp-day">
+                            <div class="temp-value">{{ day.temp_day }}°</div>
+                            <div class="temp-label">День</div>
+                        </div>
+                        <div class="temp-night">
+                            <div class="temp-value">{{ day.temp_night }}°</div>
+                            <div class="temp-label">Ночь</div>
+                        </div>
+                    </div>
+                    <div class="weather-details">
+                        <div class="detail-item">
+                            💨 {{ day.wind }} м/с
+                        </div>
+                        <div class="detail-item">
+                            💧 {{ day.humidity }}%
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+
+        <div class="columns-wrapper">
+            <div class="section">
+                <h2 class="section-title">Крупные города</h2>
+                <div class="city-list">
+                    {% for city in major_cities %}
+                    <div class="city-item">
+                        <span class="city-name">{{ city.name }}</span>
+                        <span class="city-temp">{{ city.temp | round | int }}°C</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Центральный федеральный округ</h2>
+                <div class="city-list">
+                    {% for city in central_cities %}
+                    <div class="city-item">
+                        <span class="city-name">{{ city.name }}</span>
+                        <span class="city-temp">{{ city.temp | round | int }}°C</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Северо-Западный федеральный округ</h2>
+                <div class="city-list">
+                    {% for city in north_west_cities %}
+                    <div class="city-item">
+                        <span class="city-name">{{ city.name }}</span>
+                        <span class="city-temp">{{ city.temp | round | int }}°C</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">Южный федеральный округ</h2>
+                <div class="city-list">
+                    {% for city in southern_cities %}
+                    <div class="city-item">
+                        <span class="city-name">{{ city.name }}</span>
+                        <span class="city-temp">{{ city.temp | round | int }}°C</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">Северо-Кавказский федеральный округ</h2>
+                <div class="city-list">
+                    {% for city in north_caucasian_cities %}
+                    <div class="city-item">
+                        <span class="city-name">{{ city.name }}</span>
+                        <span class="city-temp">{{ city.temp | round | int }}°C</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">Приволжский федеральный округ</h2>
+                <div class="city-list">
+                    {% for city in privolzhsky_cities %}
+                    <div class="city-item">
+                        <span class="city-name">{{ city.name }}</span>
+                        <span class="city-temp">{{ city.temp | round | int }}°C</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">Уральский федеральный округ</h2>
+                <div class="city-list">
+                    {% for city in ural_cities %}
+                    <div class="city-item">
+                        <span class="city-name">{{ city.name }}</span>
+                        <span class="city-temp">{{ city.temp | round | int }}°C</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">Сибирский федеральный округ</h2>
+                <div class="city-list">
+                    {% for city in siberian_cities %}
+                    <div class="city-item">
+                        <span class="city-name">{{ city.name }}</span>
+                        <span class="city-temp">{{ city.temp | round | int }}°C</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title">Дальневосточный федеральный округ</h2>
+                <div class="city-list">
+                    {% for city in far_eastern_cities %}
+                    <div class="city-item">
+                        <span class="city-name">{{ city.name }}</span>
+                        <span class="city-temp">{{ city.temp | round | int }}°C</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="update-time">
+            Последнее обновление: {{ update_time }}
+        </div>
+    </div>
+
+</body>
+
+</html>
