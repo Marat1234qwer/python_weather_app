@@ -1,8 +1,5 @@
 # Project Description  
-
-## Application Access  
-
-The application is available at: [https://propogoga.ru](https://propogoga.ru)  
+ 
 
 ## Obtaining an API Token  
 
